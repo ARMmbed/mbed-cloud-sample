@@ -1,1 +1,1 @@
-mbedConnectorInteface endpoint example with Device Management (Ethernet)
+mbedConnectorInteface endpoint example for mbed Cloud 
