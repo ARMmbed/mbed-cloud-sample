@@ -20,6 +20,7 @@
 // We will use mbed Cloud Support
 #define ENABLE_MBED_CLOUD_SUPPORT       true
 #define MBED_CLOUD_STORAGE_INIT		true
+#define MBED_RESET_STORAGE		true
 #define MBED_CLOUD_DEV_FLOW_INIT	true
 
 // mbed Cloud includes
