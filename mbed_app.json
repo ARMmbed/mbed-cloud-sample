@@ -1,0 +1,42 @@
+{
+    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\"",
+               "MBED_CLOUD_CLIENT_USER_CONFIG_FILE=\"mbed_cloud_client_user_config.h\"",
+		"PAL_USE_FATFS_SD=1",
+                "SA_PV_OS_MBEDOS"],
+    "target_overrides": {
+        "*": {
+	    "target.features_add": ["NANOSTACK", "LOWPAN_ROUTER", "COMMON_PAL"],
+            "mbed-client.sn-coap-max-blockwise-payload-size": 1024,
+            "nanostack-hal.event_loop_thread_stack_size": 8192,
+            "platform.stdio-baud-rate":115200,
+            "platform.stdio-convert-newlines":true,
+            "mbed-trace.enable":null
+        }
+    },
+    "config": {
+        "network-interface":{
+            "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, MESH_LOWPAN_ND, MESH_THREAD",
+            "value": "ETHERNET"
+        },
+        "wifi-ssid": {
+            "help": "WiFi SSID",
+            "value": "\"SSID\""
+        },
+        "wifi-password": {
+            "help": "WiFi Password",
+            "value": "\"Password\""
+        },
+        "developer-mode": {
+            "help": "Enable Developer mode to skip Factory enrollment",
+            "value": 1
+        },
+        "shutdown-button-enable":{
+            "help": "enable the K64F use of SWx for the deregistation/shutdown button",
+            "value": "true"
+        },
+        "shutdown-pin": {
+            "help": "which shutdown button should be used as the deregistation/shutdown button",
+            "value": "SW3"
+        }
+    }
+}
