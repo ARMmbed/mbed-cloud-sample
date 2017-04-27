@@ -27,7 +27,15 @@
 #include "mbed-connector-interface/DynamicResource.h"
 
 // our Light sensor
+#ifdef USE_BLUE_LED
 DigitalOut  __light(LED3);
+#endif
+#ifdef USE_RED_LED
+DigitalOut  __light(LED1);
+#endif
+#ifdef USE_GREEN_LED
+DigitalOut  __light(LED2);
+#endif
 
 // possible Light states
 #define OFF             "1"

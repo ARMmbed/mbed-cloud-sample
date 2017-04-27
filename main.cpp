@@ -20,6 +20,11 @@
  * limitations under the License.
  */
 
+// Choose a LED color (for FOTA illustration) - only ONE may be uncommented or compile errors occur!
+//#define USE_RED_LED			true
+#define USE_BLUE_LED			true
+//#define USE_GREEN_LED			true
+
 // Use K64F Accelerometer
 #define USE_K64F_ACCELEROMETER		true
 
