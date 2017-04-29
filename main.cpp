@@ -78,6 +78,9 @@ Connector::Options *configure_endpoint(Connector::OptionsBuilder &config)
     // Build the endpoint configuration parameters
     logger.log("Endpoint::main (%s): customizing endpoint configuration...",net_get_type());
     return config                 
+	// set the endpoint type (from mbed_cloud_client_user_config.h) 
+	.setEndpointType(MBED_CLOUD_CLIENT_ENDPOINT_TYPE)
+
         // add a Sample Static Resource
         .addResource(&static_sample)
                  
