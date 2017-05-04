@@ -70,8 +70,9 @@ include_directories(${MBED_CLOUD_CLIENT_SOURCE_DIR}/ns-hal-pal)
 
 SET(FACTORY_CLIENT_SOURCE_DIR ${MBED_CLOUD_CLIENT_SOURCE_DIR}/factory_client)
 
-include_directories(${FACTORY_CLIENT_SOURCE_DIR}/mbed_factory_configurator_client/source/include)
-include_directories(${FACTORY_CLIENT_SOURCE_DIR}/mbed_factory_configurator_client/mbed_factory_configurator_client)
+include_directories(${FACTORY_CLIENT_SOURCE_DIR}/factory_configurator_client/source/include)
+include_directories(${FACTORY_CLIENT_SOURCE_DIR}/factory_configurator_client/factory_configurator_client)
+include_directories(${FACTORY_CLIENT_SOURCE_DIR}/mbed-trace-helper/mbed-trace-helper)
 include_directories(${FACTORY_CLIENT_SOURCE_DIR}/fc_protocol_handler/fc_protocol_handler)
 include_directories(${FACTORY_CLIENT_SOURCE_DIR}/fc_protocol_handler/source/include)
 include_directories(${FACTORY_CLIENT_SOURCE_DIR}/secure_store)
@@ -91,8 +92,8 @@ include_directories(${FACTORY_CLIENT_SOURCE_DIR}/mbed-client-esfs/source-pal/lin
 include_directories(${FACTORY_CLIENT_SOURCE_DIR}/crypto_service/crypto_service)
 include_directories(${FACTORY_CLIENT_SOURCE_DIR}/crypto_service/source/include)
 include_directories(${FACTORY_CLIENT_SOURCE_DIR}/secsrv-cbor/secsrv-cbor)
-include_directories(${FACTORY_CLIENT_SOURCE_DIR}/mfcc_bundle_handler/mfcc_bundle_handler)
-include_directories(${FACTORY_CLIENT_SOURCE_DIR}/mfcc_bundle_handler/source/include)
+include_directories(${FACTORY_CLIENT_SOURCE_DIR}/fcc_bundle_handler/fcc_bundle_handler)
+include_directories(${FACTORY_CLIENT_SOURCE_DIR}/fcc_bundle_handler/source/include)
 
 # update-client
 
@@ -148,7 +149,7 @@ FILE(GLOB MBED_CLOUD_CLIENT_EXAMPLE_SRC
     "${MBED_CLIENT_SOURCE_DIR}/mbed-client-mbed-tls/source/*.cpp"
 
     "${FACTORY_CLIENT_SOURCE_DIR}/source/*.c"
-    "${FACTORY_CLIENT_SOURCE_DIR}/mbed_factory_configurator_client/source/*.c"
+    "${FACTORY_CLIENT_SOURCE_DIR}/factory_configurator_client/source/*.c"
     "${FACTORY_CLIENT_SOURCE_DIR}/storage/source/*.c"
     "${FACTORY_CLIENT_SOURCE_DIR}/secure_store/source/*.c"
     "${FACTORY_CLIENT_SOURCE_DIR}/key_config_manager/source/*.c"
@@ -160,7 +161,7 @@ FILE(GLOB MBED_CLOUD_CLIENT_EXAMPLE_SRC
     "${FACTORY_CLIENT_SOURCE_DIR}/crypto_service/source/*.c"
     "${FACTORY_CLIENT_SOURCE_DIR}/fc_protocol_handler/source/*.c"
     "${FACTORY_CLIENT_SOURCE_DIR}/secsrv-cbor/source/*.c"
-    "${FACTORY_CLIENT_SOURCE_DIR}/mfcc_bundle_handler/source/*.c"
+    "${FACTORY_CLIENT_SOURCE_DIR}/fcc_bundle_handler/source/*.c"
     )
 
 CREATE_TEST_LIBRARY(mbedCloudClientExample "${MBED_CLOUD_CLIENT_EXAMPLE_SRC}" "")
