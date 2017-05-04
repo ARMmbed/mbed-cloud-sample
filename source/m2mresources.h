@@ -17,7 +17,7 @@
 
 #include "m2mresource.h"
 #include "mbed-client/m2minterface.h"
-
+#include "key_config_manager.h"
 #include <stdio.h>
 
 /*
@@ -34,6 +34,11 @@ public:
             M2MResourceInstance::STRING, false);
         unreg_res->set_operation(M2MBase::POST_ALLOWED);
         unreg_res->set_execute_function(execute_callback(this, &ExecutableResource::unregister));
+
+        M2MResource* factory_reset_res = exec_inst->create_dynamic_resource("2", "factory_reset",
+            M2MResourceInstance::STRING, false);
+        factory_reset_res->set_operation(M2MBase::POST_ALLOWED);
+        factory_reset_res->set_execute_function(execute_callback(this, &ExecutableResource::factory_reset));
     }
 
     M2MObject* get_object() {
@@ -43,6 +48,17 @@ public:
     void unregister(void *) {
         printf("Unregister resource executed\r\n");
         _cloud_client.close();
+    }
+
+    void factory_reset(void *) {
+        printf("Factory reset resource executed\r\n");
+        _cloud_client.close();
+        kcm_status_e kcm_status = kcm_factory_reset();
+        if (kcm_status != KCM_STATUS_SUCCESS) {
+            printf("Failed to do factory reset - %d\n", kcm_status);
+        } else {
+            printf("Factory reset completed. Now restart the device\n");
+        }
     }
 
 private:

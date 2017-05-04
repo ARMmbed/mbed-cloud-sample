@@ -99,8 +99,12 @@ public:
                 clear_screen();
                 print_to_screen(0, 3, "Cloud Client: Ready");
                 print_to_screen(0, 15, endpoint->endpoint_name.c_str());
-                printf("endpoint (external): %s\r\n", endpoint->endpoint_name.c_str());
-                printf("endpoint (internal): %s\r\n", endpoint->internal_endpoint_name.c_str());
+#ifdef MBED_CONF_APP_DEVELOPER_MODE
+                printf("Endpoint Name: %s\r\n", endpoint->internal_endpoint_name.c_str());
+#else
+                printf("Endpoint Name: %s\r\n", endpoint->endpoint_name.c_str());                
+#endif                
+                printf("Device Id: %s\r\n", endpoint->internal_endpoint_name.c_str());
             }
         }
     }

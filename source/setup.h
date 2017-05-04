@@ -25,6 +25,14 @@ extern "C" {
 // Interval to update resource value in ms
 #define INCREMENT_INTERVAL 25000
 
+// Initialize platform
+// This function initializes screen and any other non-network
+// related platform specific initializations required.
+//
+// @returns
+//   0 for success, anything else for error
+extern int initPlatform();
+
 // Initialize network connection
 extern bool init_connection();
 
@@ -33,9 +41,6 @@ extern void *get_network_interface();
 
 // Print text on the screen
 extern void print_to_screen(int x, int y, const char* buffer);
-
-// Initialize screen
-extern void init_screen();
 
 // Clear screen
 extern void clear_screen();
