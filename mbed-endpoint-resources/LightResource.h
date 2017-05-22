@@ -72,11 +72,9 @@ public:
     @param string input the string containing "0" (light off) or "1" (light on)
     */
     virtual void put(const string value) {
-        if (value.compare(string(OFF)) == 0) __light = 0;
+        if (value.find(string(OFF)) != string::npos) __light = 0;
         else __light = 1;
     }
 };
 
 #endif // __LIGHT_RESOURCE_H__
-
-
