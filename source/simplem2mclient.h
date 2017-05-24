@@ -98,12 +98,13 @@ public:
             if (endpoint) {
                 clear_screen();
                 print_to_screen(0, 3, "Cloud Client: Ready");
-                print_to_screen(0, 15, endpoint->endpoint_name.c_str());
 #ifdef MBED_CONF_APP_DEVELOPER_MODE
+                print_to_screen(0, 15, endpoint->internal_endpoint_name.c_str());
                 printf("Endpoint Name: %s\r\n", endpoint->internal_endpoint_name.c_str());
 #else
-                printf("Endpoint Name: %s\r\n", endpoint->endpoint_name.c_str());                
-#endif                
+                print_to_screen(0, 15, endpoint->endpoint_name.c_str());
+                printf("Endpoint Name: %s\r\n", endpoint->endpoint_name.c_str());
+#endif
                 printf("Device Id: %s\r\n", endpoint->internal_endpoint_name.c_str());
             }
         }
@@ -199,6 +200,9 @@ public:
             case MbedCloudClient::UpdateWarningURINotFound:
                 error = "MbedCloudClient::UpdateWarningURINotFound";
                 break;
+            case MbedCloudClient::UpdateWarningRollbackProtection:
+                error = "MbedCloudClient::UpdateWarningRollbackProtection";
+                break;
             case MbedCloudClient::UpdateWarningUnknown:
                 error = "MbedCloudClient::UpdateWarningUnknown";
                 break;
@@ -213,6 +217,7 @@ public:
         }
         printf("\nError occured : %s\r\n", error);
         printf("Error code : %d\r\n\n", error_code);
+        printf("Error details : %s\r\n\n",_cloud_client.error_description());
     }
 
     bool is_client_registered() {

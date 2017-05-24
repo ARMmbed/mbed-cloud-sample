@@ -127,6 +127,7 @@ class Repo(object):
             'refs/pull/*/head:refs/remotes/origin-pull/pull/*/head',
             'refs/pull/*/merge:refs/remotes/origin-pull/pull/*/merge'
         ]
+        fetch_cmd = ['git', 'fetch', '--tags']
         if not self.is_repo_dir_exist():
             logger.info('Cloning from {} to {}'.format(self.git_url, self.repo_dir))
             cmd = ['git', 'clone', '--progress', '--no-checkout', self.git_url, self.repo_dir]
@@ -134,9 +135,19 @@ class Repo(object):
                 cmd.append('--depth=1')
             logger.debug(" ".join(cmd))
             subprocess.check_call(cmd, cwd=os.path.dirname(self.repo_file), **self.config.stream_kwargs)
-            cmd = ['git', 'fetch', '--tags', 'origin'] + refspecs
-            logger.debug(" ".join(cmd))
-            subprocess.check_call(cmd, cwd=self.repo_dir, **self.config.stream_kwargs)
+            if self.config.fetch_pull_requests:
+                fetch_cmd.extend(['origin'] + refspecs)
+            else:
+                fetch_cmd.extend(['--all'])
+            stream_kwargs = self.config.stream_kwargs.copy()
+            stream_kwargs['stderr'] = subprocess.PIPE
+            logger.debug(" ".join(fetch_cmd))
+            proc = subprocess.Popen(fetch_cmd, cwd=self.repo_dir, **stream_kwargs)
+            outs, errs = proc.communicate()
+            if proc.returncode and 'rejected' in errs.decode("utf-8"):
+                logger.error('Failed to fetch refs')
+                click.echo(errs.strip().decode("utf-8"))
+                sys.exit(1)
         else:
             cmd = ['git', 'ls-remote', '--get-url']
             logger.debug(" ".join(cmd))
@@ -152,9 +163,19 @@ class Repo(object):
                 logger.debug(" ".join(cmd))
                 subprocess.check_call(cmd, cwd=self.repo_dir, **self.config.stream_kwargs)
             if is_hash:
-                cmd = ['git', 'fetch', '--tags', 'origin'] + refspecs
-                logger.debug(" ".join(cmd))
-                subprocess.check_call(cmd, cwd=self.repo_dir, **self.config.stream_kwargs)
+                if self.config.fetch_pull_requests:
+                    fetch_cmd.extend(['origin'] + refspecs)
+                else:
+                    fetch_cmd.extend(['--all'])
+                stream_kwargs = self.config.stream_kwargs.copy()
+                stream_kwargs['stderr'] = subprocess.PIPE
+                logger.debug(" ".join(fetch_cmd))
+                proc = subprocess.Popen(fetch_cmd, cwd=self.repo_dir, **stream_kwargs)
+                outs, errs = proc.communicate()
+                if proc.returncode and 'rejected' in errs.decode("utf-8"):
+                    logger.error('Failed to fetch refs')
+                    click.echo(errs.strip().decode("utf-8"))
+                    sys.exit(1)
             else:
                 cmd = ['git', 'pull', '--rebase', '--tags', '--all']
                 logger.debug(" ".join(cmd))
@@ -511,8 +532,9 @@ def cli(config, verbose, work_dir):
 @click.option('--skip-update', is_flag=True, help='Skip Git Repositories update')
 @click.option('--shallow', is_flag=True, help='Create a shallow clone of git repositories (To speed up deployment)')
 @click.option('--fetch-mbed-os', is_flag=True, help='Allow fetching mbed-os from .lib file')
+@click.option('--fetch-pull-requests', is_flag=True, help='Allow fetching pull-request refs')
 @pass_config
-def deploy(config, plat_os, device, mw, sdk, toolchain, force, skip_update, shallow, fetch_mbed_os):
+def deploy(config, plat_os, device, mw, sdk, toolchain, force, skip_update, shallow, fetch_mbed_os, fetch_pull_requests):
     """Deploy mbed-cloud-client files"""
     config.os = plat_os
     config.device = device
@@ -523,6 +545,7 @@ def deploy(config, plat_os, device, mw, sdk, toolchain, force, skip_update, shal
     config.skip_update = skip_update
     config.shallow = shallow
     config.fetch_mbed_os = fetch_mbed_os
+    config.fetch_pull_requests = fetch_pull_requests
 
     if not config.sdk:
         assert config.os and config.device, 'OS and Device are mandatory if SDK is not given'
