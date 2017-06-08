@@ -15,7 +15,10 @@
             "mbed-trace.enable": null
         },
         "K64F": {
-            "mbed-client-pal.update-active-metadata-header-offset": 131072
+            "mbed-client-pal.update-active-metadata-header-offset": "0x00020000"
+        },
+        "NUCLEO_F429ZI": {
+            "mbed-client-pal.update-active-metadata-header-offset": "0x08020000"
         },
         "NUCLEO_F401RE": {
             "wifi-tx": "PA_11",
