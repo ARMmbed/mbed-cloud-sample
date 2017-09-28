@@ -7,26 +7,23 @@
                "SA_PV_OS_MBEDOS"],
     "target_overrides": {
         "*": {
-            "target.features_add": ["COMMON_PAL"],
+            "target.features_add": ["LWIP", "COMMON_PAL"],
             "platform.stdio-baud-rate": 115200,
             "platform.stdio-convert-newlines": true,
             "lwip.ipv4-enabled": true,
             "lwip.ipv6-enabled": false,
-            "mbed-client.sn-coap-max-blockwise-payload-size": 512,
+            "mbed-client.sn-coap-max-blockwise-payload-size": 1024,
             "mbed-trace.enable": null
         },
         "K64F": {
-	    "update-client.application-details": "0x00020000",
-            "update-client.bootloader-details": "0x00019CA0"
+            "mbed-client-pal.update-active-metadata-header-offset": "0x00020000"
         },
         "NUCLEO_F429ZI": {
-            "update-client.application-details": "0x08020000",
-            "update-client.bootloader-details": "0x0801AA98"
+            "mbed-client-pal.update-active-metadata-header-offset": "0x08020000"
         },
         "UBLOX_EVK_ODIN_W2": {
             "target.device_has_remove": ["EMAC"],
-            "update-client.application-details": "0x08020000",
-            "update-client.bootloader-details": "0x0801D204"
+            "mbed-client-pal.update-active-metadata-header-offset": "0x08020000"
         }
     },
     "config": {
