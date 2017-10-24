@@ -34,8 +34,8 @@
     },
     "from": {
       "protocol": "git",
-      "location": "git@github.com:ARMmbed/pal-platform.git",
-      "tag": "K64F_FreeRTOS"
+      "location": "git@github.com:ARMmbed/Example-PAL-Port-using-FreeRTOS.git",
+      "tag": "PAL-RR1.2.3-RC7"
     },
     "to": "SDK/K64F_FreeRTOS/K64F_FreeRTOS"
   },
@@ -59,14 +59,34 @@
       }
     }
   },
-  "Beaglebone_YoctoLinux_mbedtls":
+  "Yocto_Generic_YoctoLinux_mbedtls":
   {
     "device": {
-      "name": "Beaglebone"
+      "name": "Yocto_Generic"
     },
     "os": {
       "name": "Linux_Yocto",
       "version": "v2.2"
+    },
+    "middleware": {
+      "mbedtls": {
+        "version": "2.4.2",
+        "from": {
+          "protocol": "git",
+          "location": "https://github.com/ARMmbed/mbedtls.git",
+          "tag": "mbedtls-2.4.2"
+        },
+        "to": "Middleware/mbedtls/mbedtls"
+      }
+    }
+  },
+    "ARM_OpenWRT_mbedtls":
+  {
+    "device": {
+      "name": "OpenWRT_Generic"
+    },
+    "os": {
+      "name": "Linux_OpenWRT"
     },
     "middleware": {
       "mbedtls": {

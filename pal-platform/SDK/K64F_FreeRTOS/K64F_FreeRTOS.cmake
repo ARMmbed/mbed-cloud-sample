@@ -13,7 +13,7 @@ option(PAL_ENABLED "Enable PAL" ON)
 #updating the autogen.cmake variables
 set (MBED_CLOUD_CLIENT_OS  "FreeRTOS")
 set (MBED_CLOUD_CLIENT_DEVICE  "K64F")
-set (PAL_TARGET_OS freertos_8.2.3)
+set (PAL_TARGET_OS FreeRTOS_8.2.3)
 set (OS_BRAND FreeRTOS)
 set (PAL_TARGET_DEVICE "MK64F")
 set (CPU "cortex-m4")
@@ -27,7 +27,7 @@ SET(ENABLE_TESTING OFF CACHE STRING "Avoid compiling mbedtls tests" )
 
 set (PAL_NETWORK_LIB "lwip_1.4.1")
 
-set (PAL_BOARD_LD_SCRIPT MK64FN1M0xxx12-mbedOS.ld)
+set (PAL_BOARD_LD_SCRIPT MK64FN1M0xxx12.ld)
 SET(PAL_BOARD_SCATTER_FILE MK64FN1M0xxx12_flash.scf)
 
 set (PAL_FATFS_LIB fatfs_0.11a)
@@ -39,21 +39,27 @@ set (NETWORK_STACK)   #dirctory name for the stack, in PAL porting folders
 SET(ENABLE_PROGRAMS OFF)
 SET(ENABLE_TESTING OFF)
 
-#include_directories("${PROJECT_BINARY_DIR}")
+if(NOT MBED_APP_START)
+  set(MBED_APP_START "0" CACHE STRING "" FORCE)
+endif()
+
+if(NOT MBED_APP_SIZE)
+  set(MBED_APP_SIZE "0x100000" CACHE STRING "" FORCE)
+endif()
+
 message(" PROJECT BINARY DIR ${PROJECT_BINARY_DIR}")
 # .h files to look for
 SET_COMPILER_DBG_RLZ_FLAG (CMAKE_C_FLAGS "-DFSL_RTOS_FREE_RTOS")
 SET_COMPILER_DBG_RLZ_FLAG (CMAKE_CXX_FLAGS "-DFSL_RTOS_FREE_RTOS")
 #  additional directories to look for CMakeLists.txt
-include_directories("${K64F_FREERTOS_FOLDER}/OS/freeRTOS/${PAL_TARGET_OS}/Source/include")
+include_directories("${K64F_FREERTOS_FOLDER}/OS/FreeRTOS/${PAL_TARGET_OS}/Source/include")
 
-#add_subdirectory ("${K64F_FREERTOS_FOLDER}/OS/freeRTOS/${PAL_TARGET_OS}")
-set (EXTRA_CMAKE_DIRS ${EXTRA_CMAKE_DIRS} "${K64F_FREERTOS_FOLDER}/OS/freeRTOS/${PAL_TARGET_OS}")
+set (EXTRA_CMAKE_DIRS ${EXTRA_CMAKE_DIRS} "${K64F_FREERTOS_FOLDER}/OS/FreeRTOS/${PAL_TARGET_OS}")
 if (${CPU} MATCHES "cortex-m4")
     if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
-    	include_directories("${K64F_FREERTOS_FOLDER}/OS/freeRTOS/${PAL_TARGET_OS}/Source/portable/GCC/ARM_CM4F")
+    	include_directories("${K64F_FREERTOS_FOLDER}/OS/FreeRTOS/${PAL_TARGET_OS}/Source/portable/GCC/ARM_CM4F")
     elseif (CMAKE_C_COMPILER_ID STREQUAL "ARMCC")
-        include_directories(${K64F_FREERTOS_FOLDER}/OS/freeRTOS/${PAL_TARGET_OS}/Source/portable/RVDS/ARM_CM4F)
+        include_directories(${K64F_FREERTOS_FOLDER}/OS/FreeRTOS/${PAL_TARGET_OS}/Source/portable/RVDS/ARM_CM4F)
         SET_COMPILER_DBG_RLZ_FLAG(CMAKE_ASM_FLAGS "--cpu Cortex-M4.fp")
         SET_COMPILER_DBG_RLZ_FLAG(CMAKE_C_FLAGS "--cpu Cortex-M4.fp")
         SET_COMPILER_DBG_RLZ_FLAG(CMAKE_CXX_FLAGS "--cpu Cortex-M4.fp")
@@ -61,8 +67,9 @@ if (${CPU} MATCHES "cortex-m4")
     endif()
 endif()
 #add library to build
-set (PLATFORM_LIBS ${PLATFORM_LIBS} freertos)
+set (PLATFORM_LIBS ${PLATFORM_LIBS} FreeRTOS)
 add_definitions(-DOS_IS_FREERTOS)
+add_definitions(-D__FREERTOS__)
 add_definitions(-DFRDM_K64F)
 add_definitions(-DFREEDOM)
 add_definitions(-DCPU_MK64FN1M0VMD12)
@@ -74,8 +81,11 @@ if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
     SET_COMPILER_DBG_RLZ_FLAG (CMAKE_CXX_FLAGS "-mfpu=fpv4-sp-d16")
     SET_COMPILER_DBG_RLZ_FLAG (CMAKE_EXE_LINKER_FLAGS "-mfpu=fpv4-sp-d16")
 
-    set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -T${K64F_FREERTOS_FOLDER}/Device/${PAL_TARGET_DEVICE}/${PAL_BOARD_LD_SCRIPT} -static")
-    set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -T${K64F_FREERTOS_FOLDER}/Device/${PAL_TARGET_DEVICE}/${PAL_BOARD_LD_SCRIPT} -static")
+    set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -T${K64F_FREERTOS_FOLDER}/Device/${PAL_TARGET_DEVICE}/gcc/${PAL_BOARD_LD_SCRIPT} -static")
+    set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -T${K64F_FREERTOS_FOLDER}/Device/${PAL_TARGET_DEVICE}/gcc/${PAL_BOARD_LD_SCRIPT} -static")
+
+    SET_COMPILER_DBG_RLZ_FLAG (CMAKE_EXE_LINKER_FLAGS "-Xlinker --defsym=MBED_APP_START=${MBED_APP_START}")
+    SET_COMPILER_DBG_RLZ_FLAG (CMAKE_EXE_LINKER_FLAGS "-Xlinker --defsym=MBED_APP_SIZE=${MBED_APP_SIZE}")
 elseif (CMAKE_C_COMPILER_ID STREQUAL "ARMCC")
     SET_COMPILER_DBG_RLZ_FLAG(CMAKE_ASM_FLAGS "--apcs=interwork")
     SET_COMPILER_DBG_RLZ_FLAG(CMAKE_ASM_FLAGS "--pd \"__MICROLIB SETA 1\"")
@@ -84,20 +94,22 @@ elseif (CMAKE_C_COMPILER_ID STREQUAL "ARMCC")
     SET_COMPILER_DBG_RLZ_FLAG(CMAKE_ASM_FLAGS "--pd \"MK64FN1M0xxx12 SETA 1\"")
     SET_COMPILER_DBG_RLZ_FLAG(CMAKE_EXE_LINKER_FLAGS "--scatter ${K64F_FREERTOS_FOLDER}/Device/${PAL_TARGET_DEVICE}/arm/${PAL_BOARD_SCATTER_FILE}")
     SET_COMPILER_DBG_RLZ_FLAG(CMAKE_EXE_LINKER_FLAGS "--predefine=\"-D__ram_vector_table__=1\"")
+    SET_COMPILER_DBG_RLZ_FLAG(CMAKE_EXE_LINKER_FLAGS "--predefine=\"-DMBED_APP_START=${MBED_APP_START}\"")
+    SET_COMPILER_DBG_RLZ_FLAG(CMAKE_EXE_LINKER_FLAGS "--predefine=\"-DMBED_APP_SIZE=${MBED_APP_SIZE}\"")
 endif()
 
 # .h files to look for
 #  additional directories to look for CMakeLists.txt
 #if (PAL_USE_CMSIS)
-	include_directories ("${K64F_FREERTOS_FOLDER}/OS/freeRTOS/CMSIS/Include")
+	include_directories ("${K64F_FREERTOS_FOLDER}/OS/FreeRTOS/CMSIS/Include")
 #endif()
 
 include_directories(${K64F_FREERTOS_FOLDER}/Device/${PAL_TARGET_DEVICE})
 include_directories(${K64F_FREERTOS_FOLDER}/Device/${PAL_TARGET_DEVICE}/utilities)
 include_directories(${K64F_FREERTOS_FOLDER}/Device/${PAL_TARGET_DEVICE}/drivers)
 #  additional directories to look for CMakeLists.txt
+
 set (EXTRA_CMAKE_DIRS ${EXTRA_CMAKE_DIRS} "${K64F_FREERTOS_FOLDER}/Device/${PAL_TARGET_DEVICE}")
-#add_subdirectory ("${K64F_FREERTOS_FOLDER}/Device/${PAL_TARGET_DEVICE}")
 
 set (PLATFORM_LIBS ${PLATFORM_LIBS} board)
 
@@ -134,16 +146,13 @@ include_directories(${K64F_FREERTOS_FOLDER}/Middleware/${PAL_NETWORK_LIB}/src/in
 include_directories(${K64F_FREERTOS_FOLDER}/Middleware/${PAL_NETWORK_LIB}/src/netif)
 include_directories(${K64F_FREERTOS_FOLDER}/Middleware/${PAL_NETWORK_LIB}/src/netif/ppp)
 
-#add_subdirectory ("${K64F_FREERTOS_FOLDER}/Middleware/${PAL_NETWORK_LIB}")
 set (EXTRA_CMAKE_DIRS ${EXTRA_CMAKE_DIRS} "${K64F_FREERTOS_FOLDER}/Middleware/${PAL_NETWORK_LIB}")
-
 
 set (PLATFORM_LIBS lwip_1.4.1 ${PLATFORM_LIBS} )
 
 
+# @@@@@@@@@@@@@@@@@ IF(CMAKE_BUILD_TYPE MATCHES Release) @@@@@@@@@@@@@@@@
 
-# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
- # IF(CMAKE_BUILD_TYPE MATCHES Release)
     if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
         SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -fomit-frame-pointer")
         SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fomit-frame-pointer")
@@ -152,32 +161,19 @@ set (PLATFORM_LIBS lwip_1.4.1 ${PLATFORM_LIBS} )
 	include_directories ("${K64F_FREERTOS_FOLDER}/Middleware/mbedtls/")
 	include_directories ("${K64F_FREERTOS_FOLDER}/Middleware/mbedtls/include")
 	include_directories ("${K64F_FREERTOS_FOLDER}/Middleware/mbedtls/include/mbedtls")
-	include_directories ("${K64F_FREERTOS_FOLDER}/Middleware/port/ksdk")
+	include_directories ("${K64F_FREERTOS_FOLDER}/Middleware/mbedtls_port/ksdk")
 	include_directories ("${K64F_FREERTOS_FOLDER}/Middleware/mmcau_2.0.0")
 
-
-
 	add_definitions(-DFREESCALE_KSDK_BM)
-	add_definitions(-DMBEDTLS_CONFIG_FILE=\"ksdk_mbedtls_config.h\")
 if (PAL_CERT_TIME_VERIFY)
 	add_definitions(-DMBEDTLS_HAVE_TIME)
 	add_definitions(-DMBEDTLS_PLATFORM_TIME_ALT)
 endif()
-# 	SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DFREESCALE_KSDK_BM")
-# 	SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DFREESCALE_KSDK_BM")
-# 	SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DMBEDTLS_CONFIG_FILE='\"ksdk_mbedtls_config.h\"'")
-# 	SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DMBEDTLS_CONFIG_FILE='\"ksdk_mbedtls_config.h\"'")
 
-	list(APPEND Additional_SRC "${K64F_FREERTOS_FOLDER}/Middleware/port/ksdk/ksdk_mbedtls.c")
-
-	# Try to use HW crypto acceleration
-	# list(APPEND Additional_SRC "${K64F_FREERTOS_FOLDER}/Middleware/mmcau_2.0.0/fsl_mmcau.c")
-	# link_directories(${K64F_FREERTOS_FOLDER}/Middleware/mmcau_2.0.0/asm-cm4-cm7)
-	# set (PLATFORM_LIBS ${PLATFORM_LIBS} debug "${K64F_FREERTOS_FOLDER}/Middleware/mmcau_2.0.0/asm-cm4-cm7/lib_mmcau.a ")
-	# set (PLATFORM_LIBS ${PLATFORM_LIBS} optimized "${K64F_FREERTOS_FOLDER}/Middleware/mmcau_2.0.0/asm-cm4-cm7/lib_mmcau.a ")
+	list(APPEND Additional_SRC "${K64F_FREERTOS_FOLDER}/Middleware/mbedtls_port/ksdk/ksdk_mbedtls.c")
 
 	# Additional directories to look for CMakeLists.txt
-#	add_subdirectory ("${K64F_FREERTOS_FOLDER}/Middleware/mbedtls_2.1.2")
+
 	set (EXTRA_CMAKE_DIRS ${EXTRA_CMAKE_DIRS} "${K64F_FREERTOS_FOLDER}/Middleware/mbedtls")
 
 	set (PLATFORM_LIBS mbedtls ${PLATFORM_LIBS})
