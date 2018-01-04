@@ -31,6 +31,12 @@
 // Use mbedApplicationShield resources 
 #define USE_APP_SHIELD_RESOURCES	false
 
+// Enable/Disable the DeviceManager
+#define ENABLE_DEVICE_MANAGER	 	true	
+
+// Passphrase to supply for data management authentication
+#define MY_DM_PASSPHRASE		"arm1234"
+
 // Include security.h
 #include "security.h"
 
@@ -41,6 +47,16 @@
 #include "mbed-connector-interface/Logger.h"
 Serial pc(USBTX,USBRX);
 Logger logger(&pc);
+
+// Our Device Management Authenticator (trivial passphrase authenticator used)
+#include "mbed-connector-interface/PassphraseAuthenticator.h"
+PassphraseAuthenticator authenticator(&logger,MY_DM_PASSPHRASE);
+
+// Our Device Management Responder
+#include "mbed-connector-interface/DeviceManagementResponder.h"
+
+// Our Device Manager
+#include "mbed-connector-interface/DeviceManager.h"
 
 // Sample Static Resource
 #include "mbed-connector-interface/StaticResource.h"
@@ -117,9 +133,17 @@ int main()
 	
     // Announce
     logger.log("\r\n\r\nmbed Cloud Sample Endpoint (%s)",net_get_type());
+
+    // Configure Device Manager (if enabled)
+    DeviceManager *device_manager = NULL;
+    if (ENABLE_DEVICE_MANAGER) {
+	    // Allocate the Device Management processor 
+	    DeviceManagementResponder *dm_processor = new DeviceManagementResponder(&logger,&authenticator);
+	    device_manager = new DeviceManager(&logger,dm_processor,MBED_CLOUD_CLIENT_ENDPOINT_TYPE);
+    }
     
     // we have to plumb our network first
-    Connector::Endpoint::plumbNetwork(NULL);
+    Connector::Endpoint::plumbNetwork(device_manager);
     
     // starts the endpoint by finalizing its configuration (configure_endpoint() above called),creating a Thread and reading mbed Cloud events...
     Connector::Endpoint::start();
