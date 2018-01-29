@@ -28,9 +28,6 @@
 // Use K64F Accelerometer
 #define USE_K64F_ACCELEROMETER		true
 
-// Use mbedApplicationShield resources 
-#define USE_APP_SHIELD_RESOURCES	false
-
 // Enable/Disable the DeviceManager
 #define ENABLE_DEVICE_MANAGER	 	true	
 
@@ -62,30 +59,21 @@ PassphraseAuthenticator authenticator(&logger,MY_DM_PASSPHRASE);
 #include "mbed-connector-interface/StaticResource.h"
 StaticResource static_sample(&logger,"101","1010","hello mbed");
 
-// Sample Dynamic Resource (a counter)
-#include "mbed-endpoint-resources/SampleDynamicResource.h"
-SampleDynamicResource sample_counter(&logger,"123","4567",true);			// "true" -> resource is observable
+// Monotonic Counter Resource
+#include "mbed-endpoint-resources/MonotonicCounterResource.h"
+MonotonicCounterResource sample_counter(&logger,"123","4567",true);	    // "true" -> resource is observable
 
 // Light Resource
 #include "mbed-endpoint-resources/LightResource.h"
 LightResource light(&logger,"311","5850");
 
-// AppShield has its own accelerometer and temperature sensors
-#if USE_APP_SHIELD_RESOURCES
-    // Temperature Resource
-    #include "mbed-endpoint-resources/TemperatureResource.h"
-    TemperatureResource temperature(&logger,"303","5700",true);            // "true" --> resource is observable
-
-    // MMA7660 Accelerometer Resource
-    #include "mbed-endpoint-resources/MMAccelerometerResource.h"
-    MMAccelerometerResource accel(&logger,"888","7700",true);              // "true" --> resource is observable
-#endif // USE_APP_SHIELD_RESOURCES
-
-// K64F has an embedded accelerometer
+// K64F-specific resource options
 #if USE_K64F_ACCELEROMETER
-    // FXQ Accelerometer Resource
+
+    // K64F has an embedded accelerometer
     #include "mbed-endpoint-resources/FXAccelerometerResource.h"
     FXAccelerometerResource accel(&logger,"888","7700",true);              // "true" --> resource is observable
+
 #endif // USE_K64F_ACCELEROMETER
 
 // called from the Endpoint::start() below to create resources and the endpoint internals...
@@ -103,22 +91,14 @@ Connector::Options *configure_endpoint(Connector::OptionsBuilder &config)
         // add a Sample Counter (Dynamic Resource)
         .addResource(&sample_counter,10000)			// observe every 10 seconds
                    
-        // Add my specific physical dynamic resources...
-
 	// LED light that we can toggle on and off...
         .addResource(&light)
 
-#if USE_APP_SHIELD_RESOURCES
-	// Temperature sensor (LM75B)
-        .addResource(&temperature,8000) 			// observe every 8 seconds 
-
-	// MMA7660 Accelerometer
-        .addResource(&accel,13000)				    // observe every 13 seconds
-#endif // USE_APP_SHIELD_RESOURCES
-
 #if USE_K64F_ACCELEROMETER
+
 	// K64F FXOS8700CQ Accelerometer
 	.addResource(&accel,(bool)false)            // observe on demand ("shake"...)
+
 #endif // USE_K64F_ACCELEROMETER
                    
         // finalize the configuration...

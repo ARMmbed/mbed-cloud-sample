@@ -1,6 +1,6 @@
 /**
- * @file    SampleDynamicResource.h
- * @brief   mbed CoAP Endpoint example dynamic resource supporting CoAP GET and PUT, POST, DELETE
+ * @file    MonotonicCounterResource.h
+ * @brief   mbed CoAP Endpoint monotonic counter resource supporting CoAP GET and PUT, POST, DELETE
  * @author  Doug Anson
  * @version 1.0
  * @see
@@ -20,8 +20,8 @@
  * limitations under the License.
  */
 
-#ifndef __SAMPLE_DYNAMIC_RESOURCE_H__
-#define __SAMPLE_DYNAMIC_RESOURCE_H__
+#ifndef __MONOTONIC_COUNTER_RESOURCE_H__
+#define __MONOTONIC_COUNTER_RESOURCE_H__
 
 // Base class
 #include "mbed-connector-interface/DynamicResource.h"
@@ -29,9 +29,9 @@
 // We are a simple counter
 static int _sample_counter = 0;
 
-/** SampleDynamicResource class
+/** MonotonicCounterResource class
  */
-class SampleDynamicResource : public DynamicResource
+class MonotonicCounterResource : public DynamicResource
 {
 
 public:
@@ -42,7 +42,7 @@ public:
     @param res_name input the sample resource name
     @param observable input the resource is Observable (default: FALSE)
     */
-    SampleDynamicResource(const Logger *logger,const char *obj_name,const char *res_name,const bool observable = false) : DynamicResource(logger,obj_name,res_name,"Counter",M2MBase::GET_PUT_POST_DELETE_ALLOWED,observable) {
+    MonotonicCounterResource(const Logger *logger,const char *obj_name,const char *res_name,const bool observable = false) : DynamicResource(logger,obj_name,res_name,"Counter",M2MBase::GET_PUT_POST_DELETE_ALLOWED,observable) {
     }
 
     /**
@@ -50,7 +50,7 @@ public:
     @returns string representing the current value of this resource
     */
     virtual string get() {
-        //this->logger()->log("SampleDynamicResource: GET() called");
+        //this->logger()->log("MonotonicCounterResource: GET() called");
     	char buf[7];
     	memset(buf,0,7);
     	sprintf(buf,"%d",_sample_counter);
@@ -62,7 +62,7 @@ public:
     Put the value of the Sample Resource
     */
     virtual void put(const string value) {
-        //this->logger()->log("SampleDynamicResource: PUT(%s) called",value.c_str());
+        //this->logger()->log("MonotonicCounterResource: PUT(%s) called",value.c_str());
     	sscanf(value.c_str(),"%d",&_sample_counter );
     }
     
@@ -79,13 +79,13 @@ public:
 	    	//int instance_id = (int)param->get_argument_object_instance_id();
 	    	String resource_name = param->get_argument_resource_name();
 	    	string value = this->coapDataToString((uint8_t *)param->get_argument_value(),param->get_argument_value_length());
-	 		//this->logger()->log("SampleDynamicResource:  post(resource: [%s/%d/%s], value: [%s]) called",object_name.c_str(),instance_id,resource_name.c_str(),value.c_str());
+	 		//this->logger()->log("MonotonicCounterResource:  post(resource: [%s/%d/%s], value: [%s]) called",object_name.c_str(),instance_id,resource_name.c_str(),value.c_str());
 	 		
 	 		// scan into incrementer
 	 		sscanf(value.c_str(),"%d",&increment);
 	 	}
 	 	else {
-	 		//this->logger()->log("SampleDynamicResource: post(NULL) called");
+	 		//this->logger()->log("MonotonicCounterResource: post(NULL) called");
 	 		increment = 20;
 	 	}
     	_sample_counter += increment;
@@ -102,13 +102,13 @@ public:
 	    	//int instance_id = (int)param->get_argument_object_instance_id();
 	    	String resource_name = param->get_argument_resource_name();
 	    	string value = this->coapDataToString((uint8_t *)param->get_argument_value(),param->get_argument_value_length());
-	 		//this->logger()->log("SampleDynamicResource:  delete(resource: [%s/%d/%s], value: [%s]) called",object_name.c_str(),instance_id,resource_name.c_str(),value.c_str());
+	 		//this->logger()->log("MonotonicCounterResource:  delete(resource: [%s/%d/%s], value: [%s]) called",object_name.c_str(),instance_id,resource_name.c_str(),value.c_str());
 	 	}
 	 	else {
-	 		//this->logger()->log("SampleDynamicResource: delete(NULL) called");
+	 		//this->logger()->log("MonotonicCounterResource: delete(NULL) called");
 	 	}
     	_sample_counter = 0;
     }
 };
 
-#endif // __SAMPLE_DYNAMIC_RESOURCE_H__
+#endif // __MONOTONIC_COUNTER_RESOURCE_H__
