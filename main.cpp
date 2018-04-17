@@ -26,7 +26,7 @@
 //#define USE_GREEN_LED			true
 
 // Use K64F Accelerometer
-#define USE_K64F_ACCELEROMETER		true
+#define USE_K64F_ACCELEROMETER		false
 
 // Enable/Disable the DeviceManager
 #define ENABLE_DEVICE_MANAGER	 	true	
