@@ -21,17 +21,14 @@
  */
 
 // Choose a LED color (for FOTA illustration) - only ONE may be uncommented or compile errors occur!
-//#define USE_RED_LED			true
 #define USE_BLUE_LED			true
+//#define USE_RED_LED			true
 //#define USE_GREEN_LED			true
-
-// Use K64F Accelerometer
-#define USE_K64F_ACCELEROMETER		false
 
 // Enable/Disable the DeviceManager
 #define ENABLE_DEVICE_MANAGER	 	true	
 
-// Passphrase to supply for data management authentication
+// Passphrase to supply for data management authentication such as reboot and deregistration POSTs to Object(86)
 #define MY_DM_PASSPHRASE		"arm1234"
 
 // Include security.h
@@ -67,15 +64,6 @@ MonotonicCounterResource sample_counter(&logger,"123","4567",true);	    // "true
 #include "mbed-endpoint-resources/LightResource.h"
 LightResource light(&logger,"311","5850");
 
-// K64F-specific resource options
-#if USE_K64F_ACCELEROMETER
-
-    // K64F has an embedded accelerometer
-    #include "mbed-endpoint-resources/FXAccelerometerResource.h"
-    FXAccelerometerResource accel(&logger,"888","7700",true);              // "true" --> resource is observable
-
-#endif // USE_K64F_ACCELEROMETER
-
 // called from the Endpoint::start() below to create resources and the endpoint internals...
 Connector::Options *configure_endpoint(Connector::OptionsBuilder &config)
 {    
@@ -94,13 +82,6 @@ Connector::Options *configure_endpoint(Connector::OptionsBuilder &config)
 	// LED light that we can toggle on and off...
         .addResource(&light)
 
-#if USE_K64F_ACCELEROMETER
-
-	// K64F FXOS8700CQ Accelerometer
-	.addResource(&accel,(bool)false)            // observe on demand ("shake"...)
-
-#endif // USE_K64F_ACCELEROMETER
-                   
         // finalize the configuration...
         .build();
 }
