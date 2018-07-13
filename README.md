@@ -1,6 +1,7 @@
 mbedConnectorInterface endpoint example for mbed Cloud (workshops)
 
 Log:
+- 07/13/2018: Sync with v1.4.0 mbed Cloud Client API release (mbedOS v5.9.2)
 - 05/22/2018: Sync with v1.3.2 mbed Cloud Client API release
 
 Note: If building using a local toolchain:
