@@ -22,10 +22,6 @@
         "K64F": {
             "target.mbed_app_start"            : "0x0000a400",
             "update-client.bootloader-details" : "0x00007188",
-            "sotp-section-1-address"           : "(32*1024)",
-            "sotp-section-1-size"              : "( 4*1024)",
-            "sotp-section-2-address"           : "(36*1024)",
-            "sotp-section-2-size"              : "( 4*1024)",
             "update-client.application-details": "(40*1024)"
         },
 	"NRF52840_DK": {

@@ -11,15 +11,16 @@
             "platform.stdio-convert-newlines": true,
             "mbed-client.event-loop-size": 1024,
             "mbed-trace.enable": null,
-	    "storage-selector.filesystem": "FAT",
+	    "storage-selector.filesystem": "LITTLE",
       	    "storage-selector.mount-point": "\"sd\"",
-      	    "storage-selector.storage": "SD_CARD",
+      	    "storage-selector.storage": "SPI_FLASH",
       	    "update-client.storage-address": "(1024*1024*64)",
       	    "update-client.storage-size": "(1024*1024*2)",
       	    "update-client.storage-locations": "1",
       	    "nanostack-hal.event_loop_thread_stack_size": 8192
         },
         "K64F": {
+            "target.mbed_app_start"            : "0x0000a400",
             "update-client.bootloader-details" : "0x00007188",
             "update-client.application-details": "(40*1024)"
         },
@@ -46,6 +47,7 @@
       	    "update-client.storage-locations": 1
     	},
 	"NUCLEO_F429ZI": {
+            "target.mbed_app_start"            : "0x08010400",
             "update-client.bootloader-details" : "0x080078CC",
             "sotp-section-1-address"           : "(0x08000000+32*1024)",
             "sotp-section-1-size"              : "(16*1024)",
@@ -54,6 +56,7 @@
             "update-client.application-details": "(0x08000000+64*1024)"
         },
         "NUCLEO_F411RE": {
+            "target.mbed_app_start"            : "0x08010400",
             "update-client.bootloader-details" : "(0x08000000+30*1024)",
             "update-client.application-details": "(0x08000000+64*1024)",
 	    "wifi-tx": "PA_11",
@@ -61,6 +64,7 @@
         },
         "UBLOX_EVK_ODIN_W2": {
             "target.device_has_remove": ["EMAC"],
+            "target.mbed_app_start"            : "0x08010400",
             "update-client.bootloader-details" : "0x08007300",
             "sotp-section-1-address"           : "(0x08000000+32*1024)",
             "sotp-section-1-size"              : "(16*1024)",
