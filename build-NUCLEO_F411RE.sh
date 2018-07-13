@@ -6,12 +6,12 @@ EXE="`basename ${PWD}`"
 
 #
 # Machine dependent
-MACHINE=K64F
-BOOTLOADER=mbed-bootloader-k64f-block_device-sotp-v3_3_0.bin
+MACHINE=NUCLEO_F411RE
+BOOTLOADER=mbed-bootloader-nucleo_f411re-block_device-sotp-v3_3_0_2f113f3.bin
 
 #
-# Executable
-EXEC="BUILD/K64F/GCC_ARM/${EXE}.bin"
+# Exec (format dependent)
+EXEC="BUILD/${MACHINE}/GCC_ARM/${EXE}.bin"
 
 #
 # Output file format dependent

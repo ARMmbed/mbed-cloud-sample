@@ -6,16 +6,16 @@ EXE="`basename ${PWD}`"
 
 #
 # Machine dependent
-MACHINE=K64F
-BOOTLOADER=mbed-bootloader-k64f-block_device-sotp-v3_3_0.bin
+MACHINE=NRF52840_DK
+BOOTLOADER=mbed-bootloader-NRF52840_DK.hex
 
 #
 # Executable
-EXEC="BUILD/K64F/GCC_ARM/${EXE}.bin"
+EXEC="BUILD/${MACHINE}/GCC_ARM/${EXE}.hex"
 
 #
 # Output file format dependent
-OUTFILE=combined.bin
+OUTFILE=combined.hex
 
 set -x
 
