@@ -17,16 +17,6 @@
 #ifndef __SECURITY_H__
 #define __SECURITY_H__
 
-// We will use mbed Cloud Support
-#define ENABLE_MBED_CLOUD_SUPPORT       true
-
-// Storage handling for Updater (wont reset storage on each reboot...)
-#define MBED_CLOUD_STORAGE_INIT		true
-// #define MBED_RESET_STORAGE		true
-
-// We will use the developer flow 
-#define MBED_CLOUD_DEV_FLOW_INIT	true
-
 // mbed Cloud includes
 #include "mbed-cloud-client/MbedCloudClient.h"
 #include "mbed_cloud_client_user_config.h"
