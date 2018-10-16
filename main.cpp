@@ -70,8 +70,8 @@ Connector::Options *configure_endpoint(Connector::OptionsBuilder &config)
     // Build the endpoint configuration parameters
     logger.log("Endpoint::main (%s): customizing endpoint configuration...",net_get_type());
     return config                 
-	// set the endpoint type (from mbed_cloud_client_user_config.h) 
-	.setEndpointType(MBED_CLOUD_CLIENT_ENDPOINT_TYPE)
+        // set the endpoint type (from mbed_cloud_client_user_config.h) 
+        .setEndpointType(MBED_CLOUD_CLIENT_ENDPOINT_TYPE)
 
         // add a Sample Static Resource
         .addResource(&static_sample)
@@ -79,7 +79,7 @@ Connector::Options *configure_endpoint(Connector::OptionsBuilder &config)
         // add a Sample Counter (Dynamic Resource)
         .addResource(&sample_counter,10000)			// observe every 10 seconds
                    
-	// LED light that we can toggle on and off...
+        // LED light that we can toggle on and off...
         .addResource(&light)
 
         // finalize the configuration...
