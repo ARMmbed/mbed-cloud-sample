@@ -37,9 +37,15 @@ DigitalOut  __light(LED1);
 DigitalOut  __light(LED2);
 #endif
 
+#if TARGET_K64F || TARGET_K66F
+// possible Light states (FRDM is backwards for some reason...not sure about this)
+#define OFF             "1"
+#define ON              "0"
+#else
 // possible Light states
 #define OFF             "0"
 #define ON              "1"
+#endif
 
 /** LightResource class
  */
