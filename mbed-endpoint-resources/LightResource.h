@@ -38,8 +38,8 @@ DigitalOut  __light(LED2);
 #endif
 
 // possible Light states
-#define OFF             "1"
-#define ON              "0"
+#define OFF             "0"
+#define ON              "1"
 
 /** LightResource class
  */
