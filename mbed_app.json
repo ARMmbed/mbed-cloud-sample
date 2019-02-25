@@ -619,7 +619,7 @@
         },
         "shutdown-pin": {
             "help": "which shutdown button should be used as the deregistation/shutdown button",
-            "value": "SW3"
+            "value": "BUTTON1"
         }
     }
 }
