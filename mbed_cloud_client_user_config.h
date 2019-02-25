@@ -20,7 +20,11 @@
 #ifndef MBED_CLOUD_CLIENT_USER_CONFIG_H
 #define MBED_CLOUD_CLIENT_USER_CONFIG_H
 
-#define MBED_CLOUD_CLIENT_ENDPOINT_TYPE         "default"
+// Set the endpoint type to "mbed-endpoint"
+#define MBED_CLOUD_CLIENT_ENDPOINT_TYPE         "mbed-endpoint"
+
+// Uncomment if you want to reformat the storage
+//#define MBED_REFORMAT_STORAGE			true
 
 #define MBED_CLOUD_CLIENT_LIFETIME              3600
 
